@@ -4,22 +4,25 @@ import { defineConfig } from "vite";
 import fs from "fs";
 import path from "path";
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   server: {
-    https: {
-      key: fs.readFileSync(
-        path.resolve(import.meta.dirname, "cert/localhost-key.pem"),
-        {
-          encoding: "utf-8",
-        }
-      ),
-      cert: fs.readFileSync(
-        path.resolve(import.meta.dirname, "cert/localhost.pem"),
-        {
-          encoding: "utf-8",
-        }
-      ),
-    },
+    https:
+      command === "build"
+        ? undefined
+        : {
+            key: fs.readFileSync(
+              path.resolve(import.meta.dirname, "cert/localhost-key.pem"),
+              {
+                encoding: "utf-8",
+              }
+            ),
+            cert: fs.readFileSync(
+              path.resolve(import.meta.dirname, "cert/localhost.pem"),
+              {
+                encoding: "utf-8",
+              }
+            ),
+          },
   },
   plugins: [
     sveltekit({
@@ -37,4 +40,4 @@ export default defineConfig({
       }),
     }),
   ],
-});
+}));
